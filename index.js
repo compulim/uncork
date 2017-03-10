@@ -8,7 +8,6 @@ const PASSWORD = process.argv[5] || process.env.uncork_proxy_password;
 const DESTINATION = process.argv[3] || process.env.uncork_destination || 'ssh.github.com:443';
 const { HTTP_PROXY, HTTPS_PROXY } = process.env;
 
-const http = require('http');
 const net = require('net');
 const url = require('url');
 let packageJSON = {}
@@ -27,6 +26,12 @@ function main() {
 
   net.createServer(client => {
     const startTime = Date.now();
+
+    client.on('error', err => {
+      console.log(`--- Client connection error "${ err.message }", after ${ formatSeconds(Date.now() - startTime) } seconds`);
+      tunnel.end();
+    });
+
     const tunnel = net.connect({
       host: proxyUrl.hostname,
       port: proxyUrl.port
@@ -45,25 +50,37 @@ function main() {
       tunnel.write(req);
       process.stdout.write(req.replace(proxyAuthorization, '*'));
 
+      let welcome = new Buffer(0);
+
       let responseHandler = data => {
         let handshaken;
 
-        for (let i = 0, l = data.length - 3; i < l; i++) {
-          if (data.readInt32BE(i) === 0x0D0A0D0A) {
-            process.stdout.write(data.slice(0, i + 3));
-            client.write(data.slice(i + 3));
-            tunnel.pipe(client);
-            client.pipe(tunnel);
-            tunnel.removeListener('data', responseHandler);
+        welcome = Buffer.concat([welcome, data]);
 
-            console.log(`--- Tunnel to ${ DESTINATION } has established`);
+        for (let i = 0, l = welcome.length - 3; i < l; i++) {
+          if (welcome.readInt32BE(i) === 0x0D0A0D0A) {
+            tunnel.removeListener('data', responseHandler);
+            process.stdout.write(welcome.slice(0, i + 3));
             handshaken = true;
+
+            if (/^HTTP\/1.1\s200\s/.test(welcome.toString())) {
+              client.write(welcome.slice(i + 3));
+              tunnel.pipe(client);
+              client.pipe(tunnel);
+              welcome = null;
+
+              console.log(`--- Tunnel to ${ DESTINATION } has established`);
+            } else {
+              console.log(`--- Failed to connect to ${ DESTINATION }`);
+              client.end();
+              tunnel.end();
+            }
 
             break;
           }
         }
 
-        !handshaken && process.stdout.write(data);
+        !handshaken && process.stdout.write(welcome);
       };
 
       tunnel
@@ -72,12 +89,14 @@ function main() {
           console.log(`--- Connection closed after ${ formatSeconds(Date.now() - startTime) } seconds`);
           client.end();
         })
-        .on('error', err => {
-          console.log(`--- Connection error "${ err.message }", after ${ formatSeconds(Date.now() - startTime) } seconds`);
-        });
+    }).on('error', err => {
+      console.log(`--- Tunnel connection error "${ err.message }", after ${ formatSeconds(Date.now() - startTime) } seconds`);
+      client.end();
     });
 
     console.log(`--- Connecting to proxy at ${ proxyUrl.hostname }:${ proxyUrl.port }`);
+  }).on('error', err => {
+    console.log(`--- Server listen error ${ err.message }`);
   }).listen(PORT, () => {
     console.log(`SSH-over-HTTPS proxy ${ packageJSON.version || '' }\n`);
     console.log(`- Listening on port ${ PORT }`);
