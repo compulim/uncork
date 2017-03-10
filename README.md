@@ -20,7 +20,7 @@ SSH-over-HTTPS proxy 1.0.0
 - Will tunnel traffic to destination at ssh.github.com:443
 ```
 
-If your proxy server requires authentication, you can run `uncork 22 ssh.github.com:443 johndoe P@ssw0rd` to start `uncork` server with proxy authentication.
+If your proxy server requires authentication, you can run `uncork 22 ssh.github.com:443 johndoe P@ssw0rd` to start `uncork` server with BASIC authentication.
 
 ## Options via environment variables
 
