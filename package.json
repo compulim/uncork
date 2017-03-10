@@ -1,0 +1,24 @@
+{
+  "name": "uncork",
+  "version": "1.0.0",
+  "description": "SSH-over-HTTPS proxy that works like Unix \"corkscrew\"",
+  "main": "index.js",
+  "bin": {
+    "uncork": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "William Wong <compulim@hotmail.com> (https://github.com/compulim)",
+  "license": "MIT",
+  "preferGlobal": true,
+  "keywords": [
+    "corkscrew",
+    "proxy",
+    "ssh"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/compulim/uncork.git"
+  }
+}
