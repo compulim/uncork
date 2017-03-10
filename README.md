@@ -16,7 +16,7 @@ Run `uncork 22 ssh.github.com:443` to start `uncork` server on port 22 and forwa
 SSH-over-HTTPS proxy 1.0.0
 
 - Listening on port 22
-- Will connect to HTTPS proxy at 127.0.0.1:8890
+- Will connect to HTTPS proxy at 127.0.0.1:8888
 - Will tunnel traffic to destination at ssh.github.com:443
 ```
 
@@ -24,7 +24,7 @@ If your proxy server requires authentication, you can run `uncork 22 ssh.github.
 
 ## Options via environment variables
 
-You can also set options thru environment variables.
+You can also set options thru environment variables listed below.
 
 | Environment variable  | Description                             | Default              |
 | --------------------- | --------------------------------------- | -------------------- |
@@ -35,14 +35,14 @@ You can also set options thru environment variables.
 
 # How we use `uncork`
 
-At our customer site, their Windows boxes are locked behind firewall with HTTPS proxy. We want to use Git client to read/write to GitHub via SSH (using SSH deploy keys to limit the access).
+At our customer site, their Windows boxes are shared and locked behind firewall with HTTPS proxy. We want to use Git client to read/write to GitHub via SSH. We prefer SSH because we can use deploy keys to limit access to our repositories.
 
 Our requirements:
 
 * Use GitHub deploy keys, which is SSH only
 * Work thru their HTTPS proxy
-  * Only relay requests to external servers on port 443
-  * Require authentication, supports both BASIC and NTLM
+  * Only allow traffic to external servers on port 443
+  * Requires authentication, supports both BASIC and NTLM
 * Unzip to install
   * Do not require administrative privileges
   * Minimal footprint
@@ -63,6 +63,8 @@ On the Windows box:
   * Run `uncork 22 ssh.github.com:443`
 * Clone the repository
   * Run `git clone git@localhost/org/reponame.git`
+
+> Although some steps mentioned above requires administrative privileges, we actually build a ZIP file to contain all installed components mentioned.
 
 # Contribution
 
