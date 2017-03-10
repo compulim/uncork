@@ -4,7 +4,7 @@ SSH-over-HTTPS proxy that works like Unix `corkscrew`.
 
 # Install
 
-`npm install uncork -g` to install `uncork` globally on your system.
+Run `npm install uncork -g` to install `uncork` globally.
 
 # Run
 
