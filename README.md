@@ -1,5 +1,7 @@
 # uncork
 
+[![npm version](https://badge.fury.io/js/uncork.svg)](https://npmjs.com/package/uncork) [![npm downloads](https://img.shields.io/npm/dm/uncork.svg)](https://npmjs.com/package/uncork)
+
 SSH-over-HTTPS proxy that works like Unix [`corkscrew`](http://agroman.net/corkscrew/).
 
 # Install
