@@ -26,12 +26,12 @@ If your proxy server requires authentication, you can run `uncork 22 ssh.github.
 
 You can also set options thru environment variables listed below.
 
-| Environment variable  | Description                             | Default              |
-| --------------------- | --------------------------------------- | -------------------- |
-| uncork_destination    | Destination hostname and port           | `ssh.github.com:443` |
-| uncork_port           | Port number to listen to                | `22`                 |
-| uncork_proxy_username | Username for proxy BASIC authentication |                      |
-| uncork_proxy_password | Password for proxy BASIC authentication |                      |
+| Environment variable    | Description                             | Default              |
+| ----------------------- | --------------------------------------- | -------------------- |
+| `uncork_destination`    | Destination hostname and port           | `ssh.github.com:443` |
+| `uncork_port`           | Port number to listen to                | `22`                 |
+| `uncork_proxy_username` | Username for proxy BASIC authentication |                      |
+| `uncork_proxy_password` | Password for proxy BASIC authentication |                      |
 
 # How we use `uncork`
 
